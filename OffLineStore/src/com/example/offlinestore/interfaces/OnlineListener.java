@@ -3,7 +3,7 @@ package com.example.offlinestore.interfaces;
 import java.util.List;
 
 /**
- * 网络连接时的回调接口
+ *the method onWebConnect() will be invoke  when network connect as a callback. 
  * @author yanyinan
  *
  */

@@ -1,19 +1,22 @@
 package com.example.offlinestore.main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.Toast;
 
 import com.example.offlinestore.interfaces.CacheModel;
 import com.example.offlinestore.interfaces.OnlineListener;
 import com.example.offlinestore.utils.CacheUtils;
 /**
- * 离线缓存管理器
- * @author Administrator
+ * manager that provide main interface for client to use the function of offline caching.
+ * @author yanyinan
  *
  */
 public class NetRecoveryHandler {
@@ -24,10 +27,17 @@ public class NetRecoveryHandler {
 	private OnlineListener onlineListener;
 	private ConnectivityManager manager;
 	private NetStatusReceiver netStatusReceiver;
-	
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			ArrayList<CacheModel> cacheModels = (ArrayList<CacheModel>) msg.obj;
+			onlineListener.onWebConnect(cacheModels);
+			cacheUtils.clearAllCache();
+		}
+	};
 	
 	/**
-	 * 单例模式
+	 * single instance pattern
 	 * @param context
 	 * @return
 	 */
@@ -55,46 +65,55 @@ public class NetRecoveryHandler {
 		netStatusReceiver = new NetStatusReceiver();
 	}
 	/**
-	 * 将所有需要缓存的对象添加进来
+	 * add all model to which you transfer your data to cacheUtils
 	 */
 	public void addModels(List<CacheModel> cacheModels) {
 		cacheUtils.addCacheModels(cacheModels);
 	}
 	
 	/**
-	 * 开始执行离线缓存功能
+	 * start to execute offline caching
 	 */
-	public void execute() {
-		netStatusReceiver.setOnlineListener(onlineListener);
-		manager = (ConnectivityManager) context
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeInfo = manager.getActiveNetworkInfo();
-		if (activeInfo != null) {
-			if (activeInfo.isAvailable() && activeInfo.isConnected()) {
-				//有网络状态
-				try {
-					if(onlineListener != null){
-						onlineListener.onWebConnect(cacheUtils.getAllCache());
-						cacheUtils.clearAllCache();
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}else {
-				//无网络状态
-				doWhenOffLine();
+	public void execute(final List<CacheModel> cacheModels) {
+		Thread thread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				cacheUtils.addCacheModels(cacheModels);
+				netStatusReceiver.setOnlineListener(onlineListener);
+				manager = (ConnectivityManager) context
+						.getSystemService(Context.CONNECTIVITY_SERVICE);
+				NetworkInfo activeInfo = manager.getActiveNetworkInfo();
+				if (activeInfo != null) {
+					if (activeInfo.isAvailable() && activeInfo.isConnected()) {
+						//有网络状态
+						try {
+							if(onlineListener != null){
+								ArrayList<CacheModel> cacheModels =  cacheUtils.getAllCache();
+								Message msg = Message.obtain();
+								msg.obj = cacheModels;
+								handler.sendMessage(msg);
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}else {
+						//offline
+						doWhenOffLine();
 
+					}
+				}else {
+					doWhenOffLine();
+				}
 			}
-		}else {
-			doWhenOffLine();
-		}
+		});
+		thread.start();
 	}
 	
 	private void doWhenOffLine() {
-		// TODO Auto-generated method stub
-		Toast.makeText(context, "无网络", 1).show();
+	
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
 		filter.setPriority(1000);
@@ -102,7 +121,7 @@ public class NetRecoveryHandler {
 	}
 	
 	/**
-	 * 停止监听网络状态
+	 * stop listening the state of network
 	 * 
 	 */
 	public void stop() {

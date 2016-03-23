@@ -18,7 +18,7 @@ import com.example.offlinestore.interfaces.CacheModel;
  * 只要对象是实现CacheModel的都可以缓存起来
  * 以SharePreference来存储一些可序列化的缓存对象（key从1算起），作为一种缓存工具，以类似队列的方式存储。
  * 可以增加一个缓存对象，删除一个缓存对象（队列形式），设置某个缓存对象为null,获取所有缓存对象，获取缓存对象的总数。
- * @author yyn
+ * @author yanyinan
  *
  */
 public class CacheUtils {
@@ -239,8 +239,8 @@ public class CacheUtils {
      * @return
      * @throws Exception 
      */
-    public List<CacheModel> getAllCache() throws Exception {
-		List<CacheModel> cacheModels = new ArrayList<CacheModel>();
+    public ArrayList<CacheModel> getAllCache() throws Exception {
+    	ArrayList<CacheModel> cacheModels = new ArrayList<CacheModel>();
 		for(int i = 1;i <= getCacheCount();i++){
 			CacheModel cacheModel = getCacheModel(i);
 			cacheModels.add(cacheModel);

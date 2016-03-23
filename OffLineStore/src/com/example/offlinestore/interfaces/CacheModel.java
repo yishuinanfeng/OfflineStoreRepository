@@ -3,11 +3,14 @@ package com.example.offlinestore.interfaces;
 import java.io.Serializable;
 
 /**
- * 所有需要的缓存对象的接口
- * @author SSXT
+ * all model that want to be stored have to imlements this interface
+ * @author yanyinan
  *
  */
 public interface CacheModel extends Serializable{
-	//返回该类的标识，可以是类名或者编号等作为区分类的标识
+	/**
+	 * @return return a mark sa a identifier to differentiate different kinds of model.
+	 * 		   you can decide the identifier by yourself
+	 */
 	String getMark();
 }
