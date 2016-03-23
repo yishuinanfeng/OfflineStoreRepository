@@ -30,8 +30,10 @@ public class MainActivity extends Activity {
 		cacheModels.add(three);
 		
 		/***************************************************** 
-		 *  创建一个                                                  *
-		 *                                                     *
+		 * first,create a OnlineListener instance,override the method
+		 * onWebConnect(),write down the how you want to do with the datas
+		 * that will be stored when offline or directly do what you want when online.                                         
+		 *                                                     
 		 * ******************************************************
 		 */
 		OnlineListener onlineListener = new OnlineListener() {
@@ -56,7 +58,19 @@ public class MainActivity extends Activity {
 				
 			}
 		};
+		/********************************************************************
+		 * Secondly,create a NetRecoveryHandler instance.
+		 * Pass onlineListener and Context as parameters in constructor.
+		 * 
+		 * ********************************************************************
+		 */
 		NetRecoveryHandler netRecoveryHandler = NetRecoveryHandler.getInstance(this, onlineListener);
+		/********************************************************************
+		 * thirdly,invoke method execute() through NetRecoveryHandler instance
+		 * Pass cacheModels which hold all models that you want to post as parameter in execute().
+		 * 
+		 * ********************************************************************
+		 */
 		netRecoveryHandler.execute(cacheModels);
 		
 	}
