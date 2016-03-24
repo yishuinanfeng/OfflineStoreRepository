@@ -6,6 +6,7 @@ A android application module that support following functions :
 
 
 It is very convenient for programmer to use,waht you need is just 4 steps:
+
 1.Transfer your datas that you want to post to server into a Entity class,put all these classes into an ArrayList.
 		One one = new One();
 		Two two = new Two();
@@ -14,6 +15,7 @@ It is very convenient for programmer to use,waht you need is just 4 steps:
 		cacheModels.add(one);
 		cacheModels.add(two);
 		cacheModels.add(three);
+		
 2.Create a onlineListener's anonymous subclass like the following programs,do how you want to do to post the datas to the server.
 OnlineListener onlineListener = new OnlineListener() {
 			
