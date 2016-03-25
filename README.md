@@ -5,7 +5,7 @@ A android application module that support following functions :
 3.Above all,It will make sure that the stored data will not be lost even the application close or phone power off.
 
 
-It is very convenient for programmer to use,waht you need is just 4 steps:
+It is very convenient for programmer to use,what you need is just 4 steps:
 
 1.Transfer your datas that you want to post to server into a Entity class,put all these classes into an ArrayList.
 
@@ -17,7 +17,7 @@ It is very convenient for programmer to use,waht you need is just 4 steps:
 		cacheModels.add(two);
 		cacheModels.add(three);
 		
-2.Create a onlineListener's anonymous subclass like the following programs,do how you want to do to post the datas to the server.
+2.Create a onlineListener's anonymous subclass like the following programs,do what you want to do to post the datas to the server.
 
 OnlineListener onlineListener = new OnlineListener() {
 			
